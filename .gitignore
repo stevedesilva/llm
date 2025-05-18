@@ -1,0 +1,22 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*.ipynb_checkpoints
+
+# Environment
+.env
+*.env
+*.yml
+*.yaml
+
+# Jupyter runtime
+.ipynb_checkpoints/
+
+# Conda environment
+.env/
+.conda/
+my_project_env/
+
+# IDE
+.idea/
+.vscode/
