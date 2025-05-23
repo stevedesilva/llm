@@ -20,3 +20,4 @@ payload = {
 }
 
 response = requests.post(OLLAMA_API, json=payload, headers=HEADERS)
+print(response.json()['message']['content'])
