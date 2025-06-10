@@ -6,6 +6,8 @@ header = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36"
 }
 
+
+
 class Website:
     """
     A utility class to represent a Website that we have scraped, now with links
@@ -32,5 +34,4 @@ class Website:
     def get_contents(self):
         return f"Webpage Title:\n{self.title}\nWebpage Contents:\n{self.text}\n\n"
 
-ws = Website("https://edwarddonner.com")
-print(ws.get_contents())
+
