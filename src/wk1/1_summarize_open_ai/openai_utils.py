@@ -35,3 +35,4 @@ def summarize_url(url: str) -> str:
         return response.choices[0].message.content.strip()
     except Exception as e:
         return f"❌ Error summarizing {url}: {e}"
+

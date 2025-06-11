@@ -43,6 +43,19 @@ Do not include Terms of Service, Privacy, email links.\n"
     user_prompt += "\n".join(website.links)
     return user_prompt
 
+def get_links(url):
+    website = Website(url)
+    response = openai.chat.completions.create(
+        model=MODEL,
+        messages=[
+            {"role": "system", "content": link_system_prompt},
+            {"role": "user", "content": get_links_user_prompt(website)}
+      ],
+        response_format={"type": "json_object"}
+    )
+    result = response.choices[0].message.content
+    return json.loads(result)
 
-ws = Website("https://edwarddonner.com")
-print(get_links_user_prompt(ws))
+
+
+print(get_links("https://edwarddonner.com"))
