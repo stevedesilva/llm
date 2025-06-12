@@ -46,6 +46,7 @@ Do not include Terms of Service, Privacy, email links.\n"
 def get_links(url):
     website = Website(url)
     response = openai.chat.completions.create(
+
         model=MODEL,
         messages=[
             {"role": "system", "content": link_system_prompt},
@@ -56,6 +57,18 @@ def get_links(url):
     result = response.choices[0].message.content
     return json.loads(result)
 
+def get_all_details(url):
+    result = "Landing page:\n"
+    result += Website(url).get_contents()
+    links = get_links(url)
+    print("Found links:", links)
+    for link in links["links"]:
+        result += f"\n\n{link['type']}\n"
+        result += Website(link['url']).get_contents()
+    return result
 
 
-print(get_links("https://edwarddonner.com"))
+# print(get_links("https://edwarddonner.com"))
+print(Website("https://huggingface.co").links)
+print(get_links("https://huggingface.co"))
+print(get_all_details("https://huggingface.co"))

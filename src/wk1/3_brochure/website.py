@@ -12,6 +12,11 @@ class Website:
     """
     A utility class to represent a Website that we have scraped, now with links
     """
+    url: str
+    title: str
+    body: str
+    links: list[str]
+    text: str
 
     def __init__(self, url):
         """
@@ -19,6 +24,7 @@ class Website:
         """
         self.url = url
         response = requests.get(url, headers=header)
+
         self.body = response.content
         soup = BeautifulSoup(self.body, 'html.parser')
         self.title = soup.title.string if soup.title else "No title found"
