@@ -35,6 +35,10 @@ link_system_prompt += """
 }
 """
 
+system_prompt = ("You are an assistant that analyzes the contents of several relevant pages from a company website \
+and creates a short brochure about the company for prospective customers, investors and recruits. Respond in markdown. \
+Include details of company culture, customers and careers/jobs if you have the information.")
+
 def get_links_user_prompt(website):
     user_prompt = f"Here is the list of links on the website of {website.url} - "
     user_prompt += "please decide which of these are relevant web links for a brochure about the company, respond with the full https URL in JSON format. \
@@ -72,3 +76,24 @@ def get_all_details(url):
 print(Website("https://huggingface.co").links)
 print(get_links("https://huggingface.co"))
 print(get_all_details("https://huggingface.co"))
+
+def get_brochure_user_prompt(company_name, url):
+    user_prompt = f"You are looking at a company called: {company_name}\n"
+    user_prompt += f"Here are the contents of its landing page and other relevant pages; use this information to build a short brochure of the company in markdown.\n"
+    user_prompt += get_all_details(url)
+    user_prompt = user_prompt[:5_000] # Truncate if more that 5,000 characters
+    return user_prompt
+
+
+def create_brochure(company_name, url):
+    response = openai.chat.completions.create(
+        model=MODEL,
+        messages=[
+            {"role":"system", "content": system_prompt},
+            {"role": "user", "content": get_brochure_user_prompt(company_name, url)}
+        ]
+
+    )
+
+print(create_brochure("Hugging Face", "https://huggingface.co"))
+
