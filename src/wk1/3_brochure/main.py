@@ -1,4 +1,6 @@
 import os
+import sys
+
 import requests
 import json
 from typing import List
@@ -7,6 +9,9 @@ from bs4 import BeautifulSoup
 from IPython.display import Markdown, display, update_display
 from openai import OpenAI, api_key
 from website import Website
+
+from rich.console import Console
+from rich.markdown import Markdown
 
 
 # Load environment variables
@@ -73,9 +78,9 @@ def get_all_details(url):
 
 
 # print(get_links("https://edwarddonner.com"))
-print(Website("https://huggingface.co").links)
-print(get_links("https://huggingface.co"))
-print(get_all_details("https://huggingface.co"))
+# print(Website("https://huggingface.co").links)
+# print(get_links("https://huggingface.co"))
+# print(get_all_details("https://huggingface.co"))
 
 def get_brochure_user_prompt(company_name, url):
     user_prompt = f"You are looking at a company called: {company_name}\n"
@@ -92,8 +97,21 @@ def create_brochure(company_name, url):
             {"role":"system", "content": system_prompt},
             {"role": "user", "content": get_brochure_user_prompt(company_name, url)}
         ]
-
     )
+    return response.choices[0].message.content
 
-print(create_brochure("Hugging Face", "https://huggingface.co"))
+result = create_brochure("Hugging Face", "https://huggingface.co")
+print("Markdown Brochure:\n\n")
+print(result)
 
+if 'ipykernel' in sys.modules:
+    # We're in a Jupyter environment
+    print("Running in Jupyter Notebook or IPython environment.\n\n")
+    display(Markdown(result))
+else:
+    # We're in a script or terminal
+    print("Running in a script or terminal environment.\n\n")
+    console = Console()
+    console.print(Markdown(result))
+
+# // display(Markdown(result))
