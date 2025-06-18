@@ -98,20 +98,44 @@ def create_brochure(company_name, url):
             {"role": "user", "content": get_brochure_user_prompt(company_name, url)}
         ]
     )
-    return response.choices[0].message.content
+    result = response.choices[0].message.content
+    if 'ipykernel' in sys.modules:
+        # We're in a Jupyter environment
+        print("Running in Jupyter Notebook or IPython environment.\n\n")
+        display(Markdown(result))
+    else:
+        # We're in a script or terminal
+        print("Running in a script or terminal environment.\n\n")
+        console = Console()
+        console.print(Markdown(result))
 
-result = create_brochure("Hugging Face", "https://huggingface.co")
-print("Markdown Brochure:\n\n")
-print(result)
 
-if 'ipykernel' in sys.modules:
-    # We're in a Jupyter environment
-    print("Running in Jupyter Notebook or IPython environment.\n\n")
-    display(Markdown(result))
-else:
-    # We're in a script or terminal
-    print("Running in a script or terminal environment.\n\n")
-    console = Console()
-    console.print(Markdown(result))
 
-# // display(Markdown(result))
+def stream_brochure(company_name, url):
+    stream = openai.chat.completions.create(
+        model=MODEL,
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": get_brochure_user_prompt(company_name, url)}
+        ],
+        stream=True
+    )
+    response = ""
+    if 'ipykernel' in sys.modules:  # Check if running in Jupyter/IPython
+        display_handle = display(Markdown(""), display_id=True)
+        for chunk in stream:
+            response += chunk.choices[0].delta.content or ''
+            response = response.replace("```", "").replace("markdown", "")
+            update_display(Markdown(response), display_id=display_handle.display_id)
+    else:  # Running in PyCharm or terminal
+        print("Running in a script or terminal environment.\n\n")
+        console = Console()
+        for chunk in stream:
+            response += chunk.choices[0].delta.content or ''
+            response = response.replace("```", "").replace("markdown", "")
+            console.print(Markdown(response))
+
+
+stream_brochure("Hugging Face", "https://huggingface.co")
+# create_brochure("Hugging Face", "https://huggingface.co")
+
