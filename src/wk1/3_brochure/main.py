@@ -110,6 +110,31 @@ def create_brochure(company_name, url):
         console.print(Markdown(result))
 
 
+#
+# def stream_brochure(company_name, url):
+#     stream = openai.chat.completions.create(
+#         model=MODEL,
+#         messages=[
+#             {"role": "system", "content": system_prompt},
+#             {"role": "user", "content": get_brochure_user_prompt(company_name, url)}
+#         ],
+#         stream=True
+#     )
+#     response = ""
+#     if 'ipykernel' in sys.modules:  # Check if running in Jupyter/IPython
+#         display_handle = display(Markdown(""), display_id=True)
+#         for chunk in stream:
+#             response += chunk.choices[0].delta.content or ''
+#             response = response.replace("```", "").replace("markdown", "")
+#             update_display(Markdown(response), display_id=display_handle.display_id)
+#     else:  # Running in PyCharm or terminal
+#         print("Running in a script or terminal environment.\n\n")
+#         console = Console()
+#         for chunk in stream:
+#             response += chunk.choices[0].delta.content or ''
+#             response = response.replace("```", "").replace("markdown", "")
+#             # console.print(Markdown(response))
+#             print(response)
 
 def stream_brochure(company_name, url):
     stream = openai.chat.completions.create(
@@ -120,21 +145,23 @@ def stream_brochure(company_name, url):
         ],
         stream=True
     )
-    response = ""
+
     if 'ipykernel' in sys.modules:  # Check if running in Jupyter/IPython
+        response = ""
         display_handle = display(Markdown(""), display_id=True)
         for chunk in stream:
-            response += chunk.choices[0].delta.content or ''
-            response = response.replace("```", "").replace("markdown", "")
-            update_display(Markdown(response), display_id=display_handle.display_id)
+            chunk_content = chunk.choices[0].delta.content or ''
+            response += chunk_content
+            cleaned_response = response.replace("```", "").replace("markdown", "")
+            update_display(Markdown(cleaned_response), display_id=display_handle.display_id)
     else:  # Running in PyCharm or terminal
         print("Running in a script or terminal environment.\n\n")
-        console = Console()
         for chunk in stream:
-            response += chunk.choices[0].delta.content or ''
-            response = response.replace("```", "").replace("markdown", "")
-            console.print(Markdown(response))
-
+            chunk_content = chunk.choices[0].delta.content or ''
+            if chunk_content:
+                # Clean the chunk content and print only the new content
+                cleaned_chunk = chunk_content.replace("```", "").replace("markdown", "")
+                print(cleaned_chunk, end='', flush=True)
 
 stream_brochure("Hugging Face", "https://huggingface.co")
 # create_brochure("Hugging Face", "https://huggingface.co")
