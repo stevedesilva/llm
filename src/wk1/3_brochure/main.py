@@ -1,18 +1,14 @@
+import json
 import os
 import sys
 
-import requests
-import json
-from typing import List
-from dotenv import load_dotenv
-from bs4 import BeautifulSoup
 from IPython.display import Markdown, display, update_display
-from openai import OpenAI, api_key
-from website import Website
-
+from dotenv import load_dotenv
+from openai import OpenAI
 from rich.console import Console
 from rich.markdown import Markdown
 
+from website import Website
 
 # Load environment variables
 load_dotenv(override=True)
@@ -52,10 +48,8 @@ Do not include Terms of Service, Privacy, email links.\n"
     user_prompt += "\n".join(website.links)
     return user_prompt
 
-def get_links(url):
-    website = Website(url)
+def get_links(website):
     response = openai.chat.completions.create(
-
         model=MODEL,
         messages=[
             {"role": "system", "content": link_system_prompt},
@@ -67,20 +61,15 @@ def get_links(url):
     return json.loads(result)
 
 def get_all_details(url):
+    website = Website(url)
     result = "Landing page:\n"
-    result += Website(url).get_contents()
-    links = get_links(url)
+    result += website.get_contents()
+    links = get_links(website)
     print("Found links:", links)
     for link in links["links"]:
         result += f"\n\n{link['type']}\n"
         result += Website(link['url']).get_contents()
     return result
-
-
-# print(get_links("https://edwarddonner.com"))
-# print(Website("https://huggingface.co").links)
-# print(get_links("https://huggingface.co"))
-# print(get_all_details("https://huggingface.co"))
 
 def get_brochure_user_prompt(company_name, url):
     user_prompt = f"You are looking at a company called: {company_name}\n"
@@ -110,31 +99,6 @@ def create_brochure(company_name, url):
         console.print(Markdown(result))
 
 
-#
-# def stream_brochure(company_name, url):
-#     stream = openai.chat.completions.create(
-#         model=MODEL,
-#         messages=[
-#             {"role": "system", "content": system_prompt},
-#             {"role": "user", "content": get_brochure_user_prompt(company_name, url)}
-#         ],
-#         stream=True
-#     )
-#     response = ""
-#     if 'ipykernel' in sys.modules:  # Check if running in Jupyter/IPython
-#         display_handle = display(Markdown(""), display_id=True)
-#         for chunk in stream:
-#             response += chunk.choices[0].delta.content or ''
-#             response = response.replace("```", "").replace("markdown", "")
-#             update_display(Markdown(response), display_id=display_handle.display_id)
-#     else:  # Running in PyCharm or terminal
-#         print("Running in a script or terminal environment.\n\n")
-#         console = Console()
-#         for chunk in stream:
-#             response += chunk.choices[0].delta.content or ''
-#             response = response.replace("```", "").replace("markdown", "")
-#             # console.print(Markdown(response))
-#             print(response)
 
 def stream_brochure(company_name, url):
     stream = openai.chat.completions.create(
