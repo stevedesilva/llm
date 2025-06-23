@@ -121,11 +121,7 @@ def stream_brochure(company_name, url):
     else:  # Running in PyCharm or terminal
         print("Running in a script or terminal environment.\n\n")
         for chunk in stream:
-            chunk_content = chunk.choices[0].delta.content or ''
-            if chunk_content:
-                # Clean the chunk content and print only the new content
-                cleaned_chunk = chunk_content.replace("```", "").replace("markdown", "")
-                print(cleaned_chunk, end='', flush=True)
+            print(chunk.choices[0].delta.content or '', end='')
 
 stream_brochure("Hugging Face", "https://huggingface.co")
 # create_brochure("Hugging Face", "https://huggingface.co")
