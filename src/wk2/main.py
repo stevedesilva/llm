@@ -34,13 +34,74 @@ claude = anthropic.Anthropic()
 google.generativeai.configure()
 
 system_message = "You are an assistant that is great at telling jokes"
-# user_prompt = "Tell a light-hearted joke for an audience of Data Scientists"
-user_prompt = "Tell a light-hearted joke for an audience of Computer Scientists"
+user_prompt = "Tell a light-hearted joke for an audience of Data Scientists"
+# user_prompt = "Tell a light-hearted joke for an audience of Computer Scientists"
 
 prompts = [
     {"role": "system", "content": system_message},
     {"role": "user", "content": user_prompt}
 ]
-
+# gpt-4o-mini
+print("\n\n--- Now using gpt-4o-mini ---\n\n")
 completion = openai.chat.completions.create(model='gpt-4o-mini', messages=prompts)
 print(completion.choices[0].message.content)
+
+print("\n\n--- Now using gpt-4.1-mini ---\n\n")
+completion = openai.chat.completions.create(
+    model='gpt-4.1-mini',
+    messages=prompts,
+    temperature=0.7
+)
+print(completion.choices[0].message.content)
+
+print("\n\n--- Now using gpt-4.1-nano ---\n\n")
+completion = openai.chat.completions.create(
+    model='gpt-4.1-nano',
+    messages=prompts
+)
+print(completion.choices[0].message.content)
+
+print("\n\n--- Now using gpt-4.1 ---\n\n")
+completion = openai.chat.completions.create(
+    model='gpt-4.1',
+    messages=prompts,
+    temperature=0.4
+)
+print(completion.choices[0].message.content)
+
+print("\n\n--- Now using o3-mini ---\n\n")
+# completion = openai.chat.completions.create(
+#     model='o3-mini',
+#     messages=prompts
+# )
+completion = openai.chat.completions.create(
+    model='o3-mini',
+    messages=prompts
+)
+print(completion.choices[0].message.content)
+
+print("\n\n--- Now using claude-3-7-sonnet-latest ---\n\n")
+message = claude.messages.create(
+    model="claude-3-7-sonnet-latest",
+    max_tokens=200,
+    temperature=0.7,
+    system=system_message,
+    messages=[
+        {"role": "user", "content": user_prompt},
+    ],
+)
+print(message.content[0].text)
+
+result = claude.messages.stream(
+    model="claude-3-7-sonnet-latest",
+    max_tokens=200,
+    temperature=0.7,
+    system=system_message,
+    messages=[
+        {"role": "user", "content": user_prompt},
+    ],
+)
+
+with result as stream:
+    for text in stream:
+        print(text,end='',flush=True)
