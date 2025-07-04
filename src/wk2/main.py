@@ -26,6 +26,13 @@ if google_api_key:
 else:
     print("Google API Key not set")
 
+deepseek_api_key = os.getenv('DEEPSEEK_API_KEY')
+if deepseek_api_key:
+    print(f"DeepSeek API Key exists and begins {deepseek_api_key[:5]}")
+
+else:
+    print("DeepSeek API Key not set - please skip to the next section if you don't wish to try the DeepSeek API")
+
 # Initialize clients
 openai = OpenAI()
 
@@ -125,6 +132,18 @@ gemini_via_openai_client = OpenAI(
 
 response = gemini_via_openai_client.chat.completions.create(
     model="gemini-2.5-flash-preview-04-17",
+    messages=prompts
+)
+print(response.choices[0].message.content)
+
+
+print("\n\n--- Now using deepseek ---\n\n")
+deepseek_via_openai_client = OpenAI(
+    api_key=deepseek_api_key,
+    base_url="https://api.deepseek.com"
+)
+response = deepseek_via_openai_client.chat.completions.create(
+    model="deepseek-chat",
     messages=prompts
 )
 print(response.choices[0].message.content)
