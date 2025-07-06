@@ -147,3 +147,24 @@ response = deepseek_via_openai_client.chat.completions.create(
     messages=prompts
 )
 print(response.choices[0].message.content)
+
+print("\n\n--- Now using deepseek as stream ---\n\n")
+challenge = [
+    {"role": "system", "content": "You are a helpful assistant"},
+    {"role": "user", "content": "How may words are there in your answer to this prompt?"}
+]
+
+stream = deepseek_via_openai_client.chat.completions.create(
+    model="deepseek-chat",
+    messages=challenge,
+    stream=True
+)
+
+reply = ""
+for chunk in stream:
+    content = chunk.choices[0].delta.content or ''
+    content = content.replace("```", "").replace("markdown", "")
+    reply += content
+    print(content, end='', flush=True)  # Print the content in real-time
+
+print("\n\nNumber of words:", len(reply.split(" ")))
