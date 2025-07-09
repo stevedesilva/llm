@@ -168,3 +168,24 @@ for chunk in stream:
     print(content, end='', flush=True)  # Print the content in real-time
 
 print("\n\nNumber of words:", len(reply.split(" ")))
+
+stream = deepseek_via_openai_client.chat.completions.create(
+    model="deepseek-chat",
+    messages=challenge,
+    stream=True
+)
+
+reply = ""
+for chunk in stream:
+    if chunk.choices[0].delta.content:
+        new_content = chunk.choices[0].delta.content
+        reply += new_content
+        # Print new content as it arrives (optional - for real-time viewing)
+        print(new_content, end='', flush=True)
+
+# Clean up the reply
+reply = reply.replace("```", "").replace("markdown", "")
+
+# Print final results
+print(f"\n\nFinal reply:\n{reply}")
+print(f"Number of words: {len(reply.split())}")
