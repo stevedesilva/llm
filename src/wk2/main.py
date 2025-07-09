@@ -2,7 +2,6 @@ import os
 from dotenv import load_dotenv
 from openai import OpenAI
 import anthropic
-# from IPython import display, Markdown, update_display
 
 import google.generativeai
 
