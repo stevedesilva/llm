@@ -49,28 +49,78 @@ deepseek_via_openai_client = OpenAI(
 gpt_model = "gpt-4o-mini"
 claude_model = "claude-3-haiku-20240307"
 
-gpt_system_message = "You are a chatbot who is very argumentative;\
-you disagree with anything in the conversation and you challenge everything,\
-in a snarky way."
+# gpt_system_message = "You are a chatbot who is very argumentative;\
+# you disagree with anything in the conversation and you challenge everything,\
+# in a snarky way."
+#
+# claude_system_message = ("You are a very polite, courteous chatbot. You try to agree with \
+# everything the other person says, or find common ground. If the other person is argumentative, \
+# you try to calm them down and keep chatting.")
+#
+# gpt_user_message = ["Hi there"]
+# claude_user_message = ["Hi"]
 
-claude_system_message = ("You are a very polite, courteous chatbot. You try to agree with \
+gpt_system = "You are a chatbot who is very argumentative; \
+you disagree with anything in the conversation and you challenge everything, in a snarky way."
+
+claude_system = "You are a very polite, courteous chatbot. You try to agree with \
 everything the other person says, or find common ground. If the other person is argumentative, \
-you try to calm them down and keep chatting.")
+you try to calm them down and keep chatting."
 
-gpt_user_message = ["Hi there"]
-claude_user_message = ["Hi"]
+gpt_messages = ["Hi there"]
+claude_messages = ["Hi"]
 
+# def call_gpt():
+#     messages = [{"role": "system", "content": gpt_system_message}]
+#     for gpt,claude in zip(gpt_user_message,claude_user_message):
+#         messages.append({"role":"assistant", "content": gpt})
+#         messages.append({"role":"user", "content": claude})
+#     completion = openai.chat.completions.create(
+#         model=gpt_model,
+#         messages=messages
+#     )
+#     return completion.choices[0].message.content
 
 def call_gpt():
-    messages = [{"role": "system", "content": gpt_system_message}]
-    for gpt,claude in zip(gpt_user_message,claude_user_message):
-        messages.append({"role":"user", "content": gpt})
-        messages.append({"role":"assistant", "content": claude})
+    messages = [{"role": "system", "content": gpt_system}]
+    for gpt, claude in zip(gpt_messages, claude_messages):
+        messages.append({"role": "assistant", "content": gpt})
+        messages.append({"role": "user", "content": claude})
     completion = openai.chat.completions.create(
         model=gpt_model,
         messages=messages
     )
     return completion.choices[0].message.content
 
-print("\n\n--- Now using gpt-4o-mini ---\n\n")
+print("\n\n--- call_gpt ---\n\n")
 print(call_gpt())
+
+# def call_claude():
+#     messages = []
+#     for gpt,claude_message in zip(gpt_user_message,claude_user_message):
+#         messages.append({"role":"user", "content": gpt})
+#         messages.append({"role": "assistant", "content": claude_message})
+#     messages.append({"role": "user", "content": messages[-1]})
+#     message = claude.messages.create(
+#         model=claude_model,
+#         system=claude_system_message,
+#         messages=messages,
+#         max_tokens=500
+#     )
+#     return message.content[0].text
+
+def call_claude():
+    messages = []
+    for gpt, claude_message in zip(gpt_messages, claude_messages):
+        messages.append({"role": "user", "content": gpt})
+        messages.append({"role": "assistant", "content": claude_message})
+    messages.append({"role": "user", "content": gpt_messages[-1]})
+    message = claude.messages.create(
+        model=claude_model,
+        system=claude_system,
+        messages=messages,
+        max_tokens=500
+    )
+    return message.content[0].text
+print("\n\n--- call_claude ---\n\n")
+print(call_claude())
