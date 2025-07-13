@@ -49,18 +49,22 @@ deepseek_via_openai_client = OpenAI(
 gpt_model = "gpt-4o-mini"
 claude_model = "claude-3-haiku-20240307"
 
-gpt_system = "You are a chatbot who is very argumentative; \
-you disagree with anything in the conversation and you challenge everything, in a snarky way."
+system = ("You are a car expert debating the pros and cons of getting an electric or a hybrid SUV in the uk. \
+The user is trying to decide which to get. \
+The user travels short distances. \
+The user drives 3 to 4 times per week. \
+The user likes luxury SUVs. \
+The user wants a second hand luxury SUVs. \
+The user does not have a home charger \
+The user may have access to home charger in 6 months \
+The user wants a recommendation.")
 
-claude_system = "You are a very polite, courteous chatbot. You try to agree with \
-everything the other person says, or find common ground. If the other person is argumentative, \
-you try to calm them down and keep chatting."
 
 def call_gpt():
-    messages = [{"role": "system", "content": gpt_system}]
-    for gpt, claude in zip(gpt_messages, claude_messages):
-        messages.append({"role": "assistant", "content": gpt})
-        messages.append({"role": "user", "content": claude})
+    messages = [{"role": "system", "content": system}]
+    for gpt_msg, claude_msg in zip(gpt_messages, claude_messages):
+        messages.append({"role": "assistant", "content": gpt_msg})
+        messages.append({"role": "user", "content": claude_msg})
     completion = openai.chat.completions.create(
         model=gpt_model,
         messages=messages
@@ -69,21 +73,21 @@ def call_gpt():
 
 def call_claude():
     messages = []
-    for gpt,claude_message in zip(gpt_messages,claude_messages):
-        messages.append({"role" : "user", "content": gpt})
-        messages.append({"role": "assistant", "content": claude_message})
+    for gpt_msg,claude_msg in zip(gpt_messages,claude_messages):
+        messages.append({"role" : "user", "content": gpt_msg})
+        messages.append({"role": "assistant", "content": claude_msg})
     messages.append({"role": "user", "content": gpt_messages[-1]})
     message = claude.messages.create(
         model=claude_model,
-        system=claude_system,
+        system=system,
         messages=messages,
         max_tokens=500
     )
     return message.content[0].text
 
 
-gpt_messages = ["Hi there"]
-claude_messages = ["Hi"]
+gpt_messages = ["Let's compare Land Rover Discovery Sport hybrid vs Telsa model Y "]
+claude_messages = ["Sure,lets debate the pros and cons and recommend the best one"]
 
 
 print(f"GPT:\n\n{gpt_messages[0]}\n")
@@ -97,5 +101,5 @@ for i in range(5):
     claude_next = call_claude()
     print(f"Claude:\n{claude_next}\n")
     claude_messages.append(claude_next)
-
+    
 
