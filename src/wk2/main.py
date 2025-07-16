@@ -122,7 +122,7 @@ gemini = google.generativeai.GenerativeModel(
 response = gemini.generate_content(user_prompt)
 print(response.text)
 
-#
+
 print("\n\n--- Now using gemini-2.5-flash-preview-04-17 via OpenAI ---\n\n")
 gemini_via_openai_client = OpenAI(
     api_key=google_api_key,
