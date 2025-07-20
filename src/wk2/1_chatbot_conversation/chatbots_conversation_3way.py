@@ -118,7 +118,7 @@ print(f"George:\n{gpt_messages[0]}\n")
 print(f"Charlie:\n{claude_messages[0]}\n")
 print(f"Gemma:\n{gemini_messages[0]}\n")
 
-for i in range(5):
+for i in range(3):
     gpt_next = call_gpt()
     print(f"George:\n{gpt_next}\n")
     gpt_messages.append(gpt_next)
