@@ -6,6 +6,8 @@ from openai import OpenAI
 import google.generativeai
 import anthropic
 
+import gradio as gr
+
 load_dotenv(override=True)
 
 openai_api_key = os.getenv('OPENAI_API_KEY')
@@ -43,3 +45,19 @@ gemini_via_openai_client = OpenAI(
 gpt_model = "gpt-4o-mini"
 claude_model = "claude-3-haiku-20240307"
 gemini_model = "gemini-2.0-flash-lite"
+
+system_message = "You are are a helpful assistant"
+
+def message_gpt(prompt):
+    message = [{"role": "system", "content": system_message},
+               {"role": "user", "content": prompt}]
+
+    completion = openai.chat.completions.create(
+        model=gpt_model,
+        messages=message)
+
+    return completion.choices[0].message.content
+
+print(message_gpt("what is today's date"))
+
+gr.Interface(fn=message_gpt,inputs="textbox", outputs="textbox").launch()
