@@ -7,6 +7,7 @@ import google.generativeai
 import anthropic
 
 import gradio as gr
+from sympy import false
 
 load_dotenv(override=True)
 
@@ -60,4 +61,4 @@ def message_gpt(prompt):
 
 print(message_gpt("what is today's date"))
 
-gr.Interface(fn=message_gpt,inputs="textbox", outputs="textbox").launch()
+gr.Interface(fn=message_gpt,inputs="textbox", outputs="textbox", flagging_mode="never").launch(share=True)
