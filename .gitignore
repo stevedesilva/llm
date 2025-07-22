@@ -20,3 +20,4 @@ my_project_env/
 # IDE
 .idea/
 .vscode/
+.gradio/
