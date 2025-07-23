@@ -1,11 +1,13 @@
 import os
-import string
-
+import requests
+from typing import List
 from dotenv import load_dotenv
 from openai import OpenAI
+import google.generativeai
 import anthropic
 
 import gradio as gr
+from sympy import false
 
 load_dotenv(override=True)
 
@@ -27,7 +29,6 @@ if google_api_key:
 else:
     print("Google API Key not set")
 
-
 # Initialize clients
 
 openai = OpenAI()
@@ -45,20 +46,30 @@ gpt_model = "gpt-4o-mini"
 claude_model = "claude-3-haiku-20240307"
 gemini_model = "gemini-2.0-flash-lite"
 
-system_message = "You are are a helpful assistant"
-
-def shout(message):
-    print(f"Input: {message}")
-    return message.upper()
 
 
-print(shout("what is today's date"))
+system_message = "You are a helpful assistant that responds in markdown"
+def message_gpt(prompt):
+    message = [{"role": "system", "content": system_message},
+               {"role": "user", "content": prompt}]
 
-# normal launch
-# gr.Interface(fn=shout,inputs="textbox", outputs="textbox", flagging_mode="never").launch()
+    completion = openai.chat.completions.create(
+        model=gpt_model,
+        messages=message)
 
-# launch in browser
-# gr.Interface(fn=shout,inputs="textbox", outputs="textbox", flagging_mode="never").launch(inbrowser=True)
+    return completion.choices[0].message.content
 
-# share public link
-gr.Interface(fn=shout,inputs="textbox", outputs="textbox", flagging_mode="never").launch(share=True)
+
+print(message_gpt("what is today's date"))
+
+
+view = gr.Interface(
+    fn=message_gpt,
+    inputs=[gr.Textbox(label="Your message:")],
+    outputs=[gr.Markdown(label="Response:")],
+    flagging_mode="never"
+)
+view.launch()
+
+
+

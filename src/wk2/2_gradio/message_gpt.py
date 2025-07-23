@@ -29,7 +29,6 @@ if google_api_key:
 else:
     print("Google API Key not set")
 
-
 # Initialize clients
 
 openai = OpenAI()
@@ -49,6 +48,7 @@ gemini_model = "gemini-2.0-flash-lite"
 
 system_message = "You are are a helpful assistant"
 
+
 def message_gpt(prompt):
     message = [{"role": "system", "content": system_message},
                {"role": "user", "content": prompt}]
@@ -59,6 +59,21 @@ def message_gpt(prompt):
 
     return completion.choices[0].message.content
 
+
 print(message_gpt("what is today's date"))
 
-gr.Interface(fn=message_gpt,inputs="textbox", outputs="textbox", flagging_mode="never").launch(share=True)
+# gr.Interface(fn=message_gpt,
+#              inputs="textbox",
+#              outputs="textbox",
+#              flagging_mode="never").launch(share=True)
+
+view = gr.Interface(
+    fn=message_gpt,
+    inputs=[gr.Textbox(label="Your message:", lines=6)],
+    outputs=[gr.Textbox(label="Response:", lines=8)],
+    flagging_mode="never"
+)
+view.launch()
+
+
+
