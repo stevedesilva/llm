@@ -3,6 +3,7 @@ import os
 import sys
 
 import gradio as gr
+import anthropic
 from IPython.display import Markdown, display, update_display
 from dotenv import load_dotenv
 from jupyter_client.consoleapp import flags
@@ -20,6 +21,15 @@ if api_key and api_key.startswith("sk-proj-"):
     print("API key found and looks good so far!")
 else:
     print("❌ Invalid API key. Please check your .env file or the troubleshooting notebook.")
+
+anthropic_api_key = os.getenv('ANTHROPIC_API_KEY')
+if anthropic_api_key:
+    print(f"Anthropic API Key exists and begins {anthropic_api_key[:7]}")
+else:
+    print("Anthropic API Key not set")
+
+# Initialize client
+claude = anthropic.Anthropic()
 
 # Define the model and API endpoint
 MODEL = 'gpt-4o-mini'
@@ -102,7 +112,7 @@ def create_brochure(company_name, url):
 
 
 
-def stream_brochure(company_name, url):
+def stream_brochure_gpt(company_name, url):
     stream = openai.chat.completions.create(
         model=MODEL,
         messages=[
@@ -116,11 +126,38 @@ def stream_brochure(company_name, url):
         result += chunk.choices[0].delta.content or ""
         yield result
 
+def stream_brochure_claude(company_name, url):
+    result = claude.messages.stream(
+        model="claude-3-haiku-20240307",
+        max_tokens=1000,
+        temperature=0.7,
+        system=system_prompt,
+        messages=[
+            {"role": "user", "content": get_brochure_user_prompt(company_name, url)}
+        ]
+    )
+    response = ""
+    with result as stream:
+        for text in stream.text_stream:
+            response += text or ""
+            yield response
+
 # stream_brochure("Hugging Face", "https://huggingface.co")
 # create_brochure("Hugging Face", "https://huggingface.co")
 
-view = gr.Interface(fn=stream_brochure,
-                    inputs=[gr.Textbox(label="Company name", placeholder="Hugging Face"),gr.Textbox(label="Add website for brochure", placeholder="https://huggingface.co")],
+def stream_model(company_name, url, model):
+    if model == 'GPT':
+        result = stream_brochure_gpt(company_name, url)
+    elif model == "Claude":
+        result = stream_brochure_claude(company_name, url)
+    else:
+        raise ValueError("unknown model")
+    yield from result
+
+view = gr.Interface(fn=stream_model,
+                    inputs=[gr.Textbox(label="Company name", placeholder="Hugging Face"),
+                            gr.Textbox(label="Add website for brochure", placeholder="https://huggingface.co"),
+                            gr.Dropdown(['GPT', 'Claude'], label="Select model", value='GPT')],
                     outputs=[gr.Markdown(label="Brochure:")],
                     flagging_mode="never")
 view.launch(share=True)
