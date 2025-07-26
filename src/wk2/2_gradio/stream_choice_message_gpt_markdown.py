@@ -74,14 +74,6 @@ def stream_gpt(prompt):
         yield result
 
 
-# view = gr.Interface(
-#     fn=stream_gpt,
-#     inputs=[gr.Textbox(label="Your message:")],
-#     outputs=[gr.Markdown(label="Response:")],
-#     flagging_mode="never"
-# )
-# view.launch()
-
 def stream_model(prompt, model):
     if model == 'GPT':
         result = stream_gpt(prompt)
