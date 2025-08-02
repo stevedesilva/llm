@@ -1,12 +1,8 @@
 import os
 from dotenv import load_dotenv
 from openai import OpenAI
-import anthropic
-
-import google.generativeai
 
 load_dotenv(override=True)
-
 
 google_api_key = os.getenv('GOOGLE_API_KEY')
 if google_api_key:
