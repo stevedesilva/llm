@@ -42,6 +42,7 @@ def build_evaluation_prompt(question: str, user_answer: str) -> str:
         f"The question was:\n{question}\n\n"
         f"The student's answer is:\n{user_answer}\n\n"
         "Evaluate the answer and provide clear, constructive feedback. "
+        "Give and clear example."
         "Say if it's correct, and explain why or why not."
     )
 
@@ -103,9 +104,9 @@ with gr.Blocks() as demo:
 
     with gr.Row():
         language_dropdown = gr.Dropdown(
-            choices=["Python", "Java", "Go"],
-            label="📘 Language",
-            value="Python"
+            choices=["Regular expressions", "Data Structures and Algorithms", "Coding Architecture", "Coding Data Patterns", "Coding Python", "Coding JavaScript", "Coding Go", "Coding Java"],
+            label="📘 Question choice",
+            value="Coding Java"
         )
 
         difficulty_dropdown = gr.Dropdown(
