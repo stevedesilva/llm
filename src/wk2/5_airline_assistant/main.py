@@ -1,14 +1,19 @@
 import os
 import json
 import base64
+# image
 from io import BytesIO
 from PIL import Image
+# sound
+from pydub import AudioSegment
+from pydub.playback import play
 
-from http.client import responses
 
 from dotenv import load_dotenv
 from openai import OpenAI
+
 import gradio as gr
+from http.client import responses
 
 load_dotenv(override=True)
 
@@ -97,5 +102,20 @@ def artist(city: str):
     image_data = base64.b64decode(image_base64)
     return Image.open(BytesIO(image_data))
 
-image = artist("London")
-image.show()
+# Test
+# image = artist("London")
+# image.show()
+
+# brew install ffmpeg
+def talker(message):
+   response = openai.audio.speech.create(
+       model="tts-1",
+       voice="onyx",
+       input=message
+   )
+   audio_stream = BytesIO(response.content)
+   audio = AudioSegment.from_file(audio_stream,format="mp3")
+   play(audio)
+
+# Test
+# talker("Fortune favours the brave")
