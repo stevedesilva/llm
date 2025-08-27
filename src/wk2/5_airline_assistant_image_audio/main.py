@@ -117,5 +117,27 @@ def talker(message):
    audio = AudioSegment.from_file(audio_stream,format="mp3")
    play(audio)
 
+
+
 # Test
 # talker("Fortune favours the brave")
+
+def chat(history):
+    messages = [{"role": "system", "content": system_message}] + history
+    response = openai.chat.completions.create(model=MODEL, messages=messages, tools=tools)
+    image = None
+
+    if response.choices[0].finish_reason == "tool_calls":
+        message = response.choices[0].message
+        response, city = handle_tool_call(message)
+        messages.append(message)
+        messages.append(response)
+        image = artist(city)
+        response = openai.chat.completions.create(model=MODEL, messages=messages)
+
+    reply = response.choices[0].message.content
+    history += [{"role": "assistant", "content": reply}]
+
+    talker(reply)
+
+    return history, image
