@@ -8,7 +8,7 @@ load_dotenv(override=True)
 
 openai_api_key = os.getenv('OPENAI_API_KEY')
 if openai_api_key:
-    print(f"OpenAI API Key exists and begins {openai_api_key[:8]}")
+    print(f"OpenAI API Key exists and begins {openai_api_key[:5]}")
 else:
     print("OpenAI API Key not set")
 
@@ -35,48 +35,66 @@ along with context about their meaning and significance."""
 
 def generate_proverb(topic, culture="general"):
     """Generate a proverb based on a topic and optional culture."""
-    user_prompt = f"Generate a proverb about '{topic}'"
-    if culture and culture.lower() != "general":
-        user_prompt += f" in the style of {culture} culture"
-    user_prompt += ". Provide the proverb and a brief explanation of its meaning."
+    if not topic or not topic.strip():
+        return "❌ Please enter a topic or theme."
     
-    response = openai.chat.completions.create(
-        model=MODEL,
-        messages=[
-            {"role": "system", "content": GENERATE_SYSTEM_PROMPT},
-            {"role": "user", "content": user_prompt}
-        ]
-    )
-    return response.choices[0].message.content
+    try:
+        user_prompt = f"Generate a proverb about '{topic}'"
+        if culture and culture.lower() != "general":
+            user_prompt += f" in the style of {culture} culture"
+        user_prompt += ". Provide the proverb and a brief explanation of its meaning."
+        
+        response = openai.chat.completions.create(
+            model=MODEL,
+            messages=[
+                {"role": "system", "content": GENERATE_SYSTEM_PROMPT},
+                {"role": "user", "content": user_prompt}
+            ]
+        )
+        return response.choices[0].message.content
+    except Exception as e:
+        return f"❌ Error generating proverb: {str(e)}\n\nPlease check your API key and internet connection."
 
 
 def explain_proverb(proverb):
     """Explain the meaning of a given proverb."""
-    user_prompt = f"Explain the meaning and wisdom of this proverb: '{proverb}'"
+    if not proverb or not proverb.strip():
+        return "❌ Please enter a proverb to explain."
     
-    response = openai.chat.completions.create(
-        model=MODEL,
-        messages=[
-            {"role": "system", "content": EXPLAIN_SYSTEM_PROMPT},
-            {"role": "user", "content": user_prompt}
-        ]
-    )
-    return response.choices[0].message.content
+    try:
+        user_prompt = f"Explain the meaning and wisdom of this proverb: '{proverb}'"
+        
+        response = openai.chat.completions.create(
+            model=MODEL,
+            messages=[
+                {"role": "system", "content": EXPLAIN_SYSTEM_PROMPT},
+                {"role": "user", "content": user_prompt}
+            ]
+        )
+        return response.choices[0].message.content
+    except Exception as e:
+        return f"❌ Error explaining proverb: {str(e)}\n\nPlease check your API key and internet connection."
 
 
 def get_cultural_proverbs(culture, count=3):
     """Get proverbs from a specific culture."""
-    user_prompt = f"Provide {count} authentic proverbs from {culture} culture. "
-    user_prompt += "For each proverb, include its meaning and cultural significance."
+    if not culture or not culture.strip():
+        return "❌ Please enter a culture name."
     
-    response = openai.chat.completions.create(
-        model=MODEL,
-        messages=[
-            {"role": "system", "content": CULTURE_SYSTEM_PROMPT},
-            {"role": "user", "content": user_prompt}
-        ]
-    )
-    return response.choices[0].message.content
+    try:
+        user_prompt = f"Provide {int(count)} authentic proverbs from {culture} culture. "
+        user_prompt += "For each proverb, include its meaning and cultural significance."
+        
+        response = openai.chat.completions.create(
+            model=MODEL,
+            messages=[
+                {"role": "system", "content": CULTURE_SYSTEM_PROMPT},
+                {"role": "user", "content": user_prompt}
+            ]
+        )
+        return response.choices[0].message.content
+    except Exception as e:
+        return f"❌ Error fetching cultural proverbs: {str(e)}\n\nPlease check your API key and internet connection."
 
 
 # Create Gradio interface with tabs for different functions
