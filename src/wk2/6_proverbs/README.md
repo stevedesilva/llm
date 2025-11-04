@@ -55,7 +55,13 @@ A Gradio-based web application that lets you explore the wisdom of proverbs from
 
 - Python 3.10+
 - OpenAI API key
-- Dependencies from environment_v2.yml (gradio, openai, python-dotenv)
+- Dependencies: Install from the root-level `environment_v2.yml` file in the repository
+  ```bash
+  # From the repository root
+  conda env create -f environment_v2.yml
+  conda activate llms
+  ```
+  Key dependencies used by this app: gradio, openai, python-dotenv
 
 ## Technology
 

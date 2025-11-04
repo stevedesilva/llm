@@ -82,7 +82,7 @@ def get_cultural_proverbs(culture, count=3):
         return "❌ Please enter a culture name."
     
     try:
-        user_prompt = f"Provide {int(count)} authentic proverbs from {culture} culture. "
+        user_prompt = f"Provide {count} authentic proverbs from {culture} culture. "
         user_prompt += "For each proverb, include its meaning and cultural significance."
         
         response = openai.chat.completions.create(
