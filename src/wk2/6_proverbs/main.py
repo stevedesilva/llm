@@ -8,9 +8,9 @@ load_dotenv(override=True)
 
 openai_api_key = os.getenv('OPENAI_API_KEY')
 if openai_api_key:
-    print(f"OpenAI API Key exists and begins {openai_api_key[:5]}")
+    print("✓ OpenAI API Key is set")
 else:
-    print("OpenAI API Key not set")
+    print("❌ OpenAI API Key not set")
 
 # Initialize OpenAI client
 openai = OpenAI()
