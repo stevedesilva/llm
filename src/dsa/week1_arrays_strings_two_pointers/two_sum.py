@@ -31,7 +31,7 @@ Constraints:
 
 Staff+ Focus:
     - Invariant: The complement (target - current_num) must exist in the hashmap
-    - O(1) space argument: While we use a hashmap, it's bounded by the input size
+    - Space-time tradeoff: O(n) space for hashmap enables O(1) lookup time
     - The hashmap ensures O(1) lookup time for complements
 """
 
