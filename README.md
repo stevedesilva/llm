@@ -1,5 +1,8 @@
 # LLM Engineering 
 
+## Staff+ FAANG LeetCode Study Guide
+
+See [FAANG_LEETCODE_GUIDE.md](FAANG_LEETCODE_GUIDE.md) for a comprehensive 10-week study plan covering 50 curated LeetCode problems mapped to FAANG interview patterns.
 
 ## Set Up the Project in PyCharm
 
