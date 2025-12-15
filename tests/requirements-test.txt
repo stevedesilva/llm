@@ -1,0 +1,28 @@
+# Testing Requirements
+# Install with: pip install -r tests/requirements-test.txt
+
+# Core testing framework
+pytest>=7.4.0
+pytest-cov>=4.1.0
+pytest-mock>=3.11.1
+
+# Mocking and testing utilities
+unittest-xml-reporting>=3.2.0
+
+# Code coverage reporting
+coverage>=7.3.0
+
+# For testing async code (if needed in future)
+pytest-asyncio>=0.21.0
+
+# Optional: Better test output
+pytest-sugar>=0.9.7
+
+# The actual dependencies needed for the code being tested
+beautifulsoup4>=4.12.0
+requests>=2.31.0
+python-dotenv>=1.0.0
+openai>=1.0.0
+
+# Note: gradio is in environment_v2.yml but not strictly needed for tests
+# since we mock the LLM interactions
