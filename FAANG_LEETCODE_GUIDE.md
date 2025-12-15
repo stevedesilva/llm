@@ -1,6 +1,6 @@
 # Staff+ FAANG LeetCode Study Guide
 
-A curated, Staff+–level LeetCode problem list, organized week by week, mapped directly to the patterns and expectations of FAANG interviews in Java. This list is intentionally tight—every problem earns its place.
+A curated, Staff+-level LeetCode problem list, organized week by week, mapped directly to the patterns and expectations of FAANG interviews in Java. This list is intentionally tight—every problem earns its place.
 
 **You should not add extra problems unless you are consistently finishing early.**
 
