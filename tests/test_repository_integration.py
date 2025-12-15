@@ -9,7 +9,7 @@ These tests are designed to work even when some dependencies (like API keys) are
 """
 
 import unittest
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch, MagicMock, patch
 import sys
 import os
 
@@ -198,6 +198,7 @@ class TestPromptBuildingFunctions(unittest.TestCase):
     - Need to ensure all context is included
     """
     
+    @patch.dict('sys.modules', {'gradio': MagicMock()})
     def test_build_system_prompt_for_code_questions(self):
         """
         TEST: System prompts include language and difficulty level
@@ -213,8 +214,6 @@ class TestPromptBuildingFunctions(unittest.TestCase):
         build_system_prompt = None
         try:
             sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src', 'wk2', '3_chatbot'))
-            # We need to mock gradio since chatbot files import it
-            sys.modules['gradio'] = MagicMock()
             from software_engineer_tester import build_system_prompt
         except ImportError:
             try:
@@ -235,6 +234,7 @@ class TestPromptBuildingFunctions(unittest.TestCase):
         self.assertIn("advanced", prompt_java.lower(),
                      "Prompt should adapt to different difficulty levels")
     
+    @patch.dict('sys.modules', {'gradio': MagicMock()})
     def test_build_evaluation_prompt_structure(self):
         """
         TEST: Evaluation prompts include question, answer, and instructions
@@ -249,7 +249,6 @@ class TestPromptBuildingFunctions(unittest.TestCase):
         build_evaluation_prompt = None
         try:
             sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src', 'wk2', '3_chatbot'))
-            sys.modules['gradio'] = MagicMock()
             from software_engineer_tester import build_evaluation_prompt
         except ImportError:
             try:

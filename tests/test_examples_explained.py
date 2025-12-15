@@ -415,6 +415,11 @@ def get_greeting():
     - Depends on datetime.datetime.now() (system time)
     - Hard to test without mocking
     - Time-dependent logic needs controlled testing
+    
+    Note: In production code, you might refactor this to accept current_time
+    as a parameter with a default value of None (and use datetime.now() if None).
+    However, this example intentionally uses the global datetime.now() to
+    demonstrate how to test time-dependent code using @patch.
     """
     current_hour = datetime.datetime.now().hour
     
